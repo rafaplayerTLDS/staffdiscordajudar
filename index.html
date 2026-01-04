@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Ferramentas Discord</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d1515 100%);
+            color: #fff;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .box {
+            background: #2a1515;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #3d2020;
+        }
+
+        .box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        .box h3 {
+            margin: 0 0 20px 0;
+            color: #ff3b3b;
+            font-size: 20px;
+            font-weight: 600;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #8b2020;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #d4a8a8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], 
+        input[type="date"], 
+        input[type="time"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 2px solid #3d2020;
+            outline: none;
+            background: #1a0a0a;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        input[type="text"]:focus, 
+        input[type="date"]:focus, 
+        input[type="time"]:focus, 
+        select:focus, 
+        textarea:focus {
+            border-color: #ff3b3b;
+            background: #250f0f;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #6b4545;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #ff3b3b 0%, #c41f1f 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 59, 59, 0.4);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #e63030 0%, #a81818 100%);
+            box-shadow: 0 6px 20px rgba(255, 59, 59, 0.6);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output, .result {
+            background: #150808;
+            padding: 14px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #3d2020;
+            word-break: break-all;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+        }
+
+        pre {
+            background: #0a0404;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            overflow-x: auto;
+            border: 1px solid #2a1515;
+        }
+
+        .checkbox-group {
+            background: #1a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 2px solid #3d2020;
+        }
+
+        .checkbox-item {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-right: 10px;
+            accent-color: #ff3b3b;
+        }
+
+        .checkbox-item label {
+            display: inline;
+            margin: 0;
+            font-weight: normal;
+            font-size: 14px;
+            color: #e0e0e0;
+            text-transform: none;
+            letter-spacing: normal;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 20px 10px;
+            }
+
+            h2 {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2>🛠️ Ferramentas Discord</h2>
+
+<div class="container">
+
+    <!-- GERADOR @ -->
+    <div class="box">
+        <h3>👤 Gerador de @ Discord</h3>
+
+        <label>ID do Usuário:</label>
+        <input type="text" id="discordId" placeholder="Digite o ID do usuário">
+
+        <button onclick="gerarMention()">Gerar @</button>
+
+        <div class="result" id="resultadoMention">A menção aparecerá aqui</div>
+
+        <button onclick="copiarMention()">📋 Copiar @</button>
+    </div>
+
+    <!-- GERADOR PROVAS PUNIÇÃO -->
+    <div class="box">
+        <h3>⚖️ Gerador de Provas Punição</h3>
+
+        <label>Tipo de Punição</label>
+        <select id="tipoPunicao">
+            <option value="ADV">ADV</option>
+            <option value="BAN">BAN</option>
+        </select>
+
+        <div id="camposDenuncianteADV">
+            <label>Denunciante</label>
+            <input id="denunciante" placeholder="Nome do denunciante">
+
+            <label>Denunciado</label>
+            <input id="denunciado" placeholder="Nome do denunciado">
+        </div>
+
+        <div id="camposIDBAN" style="display: none;">
+            <label>ID</label>
+            <input id="idBan" placeholder="Ex: 123">
+        </div>
+
+        <label>Motivo</label>
+        <textarea id="motivoPunicao" placeholder="Descreva o motivo"></textarea>
+
+        <label>Provas</label>
+        <textarea id="provasPunicao" placeholder="Cole os links das provas"></textarea>
+
+        <button onclick="gerarProvasPunicao()">Gerar Provas</button>
+
+        <label>Resultado</label>
+        <textarea id="resultadoProvasPunicao" readonly></textarea>
+
+        <button onclick="copiarProvasPunicao()">📋 Copiar Provas</button>
+    </div>
+
+    <!-- GERADOR TRIAL -->
+    <div class="box">
+        <h3>🔧 Gerador ADV / UNBAN / BAN / DEVOLUÇÃO</h3>
+
+        <label>Tipo de Pedido</label>
+        <select id="tipo">
+            <option value="ADV">ADV</option>
+            <option value="UNBAN">UNBAN</option>
+            <option value="BAN">BAN</option>
+            <option value="DEVOLUCAO">DEVOLUÇÃO DE ITENS</option>
+        </select>
+
+        <label>ID</label>
+        <input id="idJogador" placeholder="Ex: 123">
+
+        <label>Motivo</label>
+        <textarea id="motivo" placeholder="Descreva o motivo"></textarea>
+
+        <label>Itens (apenas para devolução)</label>
+        <textarea id="itens" placeholder="Ex: Pistola x1, Dinheiro x50k"></textarea>
+
+        <label>Link da MGS / Provas</label>
+        <input id="provas" placeholder="https://...">
+
+        <label>Selecione os Cargos</label>
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="checkbox" id="cargoStaffTrial" value="834230769811324988">
+                <label for="cargoStaffTrial">Staff</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="cargoSupervisorTrial" value="898442078760108032">
+                <label for="cargoSupervisorTrial">Supervisor</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="cargoAdminTrial" value="635565644175114316">
+                <label for="cargoAdminTrial">Admin</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="cargoAdminLogTrial" value="1362168080716927133">
+                <label for="cargoAdminLogTrial">Admin (Discord Log)</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="cargoSupervisorLogTrial" value="1362168080716927132">
+                <label for="cargoSupervisorLogTrial">Supervisor (Discord Log)</label>
+            </div>
+        </div>
+
+        <button onclick="gerarTrial()">Gerar Mensagem</button>
+
+        <label>Resultado</label>
+        <textarea id="resultadoTrial" readonly></textarea>
+
+        <button onclick="copiarTrial()">📋 Copiar Mensagem</button>
+    </div>
+
+    <!-- GERADOR SOLICITAÇÕES -->
+    <div class="box">
+        <h3>📋 Gerador de Solicitações</h3>
+
+        <label>Tipo de Solicitação</label>
+        <select id="tipoSolicitacao" onchange="atualizarCamposSolicitacao()">
+            <option value="UNBAN">UNBAN</option>
+            <option value="TELA">TELA</option>
+            <option value="RESET">RESET</option>
+            <option value="DEVOLUCAO_SOL">DEVOLUÇÃO</option>
+            <option value="ADM">ADM</option>
+        </select>
+
+        <label>ID</label>
+        <input id="idSolicitacao" placeholder="Ex: 123">
+
+        <label>Motivo</label>
+        <textarea id="motivoSolicitacao" placeholder="Descreva o motivo"></textarea>
+
+        <div id="campoObservacaoSol" style="display: block;">
+            <label>Observação</label>
+            <textarea id="observacaoSolicitacao" placeholder="Ex: Não tem o clipe do ocorrido porém a cds bate com o local informado pelo o mesmo. Log normal."></textarea>
+        </div>
+
+        <div id="campoItensSol" style="display: none;">
+            <label>Itens</label>
+            <textarea id="itensSolicitacao" placeholder="Coloque todos os itens que foram perdidos"></textarea>
+        </div>
+
+        <label id="labelProvas">Provas</label>
+        <textarea id="provasSolicitacao" placeholder="Anexe os vídeos e se possível log"></textarea>
+
+        <div id="campoCargosSol" style="display: block;">
+            <label>Selecione os Cargos</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cargoStaff" value="834230769811324988">
+                    <label for="cargoStaff">Staff</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cargoSupervisor" value="898442078760108032">
+                    <label for="cargoSupervisor">Supervisor</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cargoAdmin" value="635565644175114316">
+                    <label for="cargoAdmin">Admin</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cargoAdminLog" value="1362168080716927133">
+                    <label for="cargoAdminLog">Admin (Discord Log)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cargoSupervisorLog" value="1362168080716927132">
+                    <label for="cargoSupervisorLog">Supervisor (Discord Log)</label>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="gerarSolicitacao()">Gerar Solicitação</button>
+
+        <label>Resultado</label>
+        <textarea id="resultadoSolicitacao" readonly></textarea>
+
+        <button onclick="copiarSolicitacao()">📋 Copiar Solicitação</button>
+    </div>
+
+</div>
+
+<script>
+/* ===== MENÇÃO ===== */
+function gerarMention() {
+    const id = document.getElementById("discordId").value.trim();
+    const output = document.getElementById("resultadoMention");
+
+    if (!id || isNaN(id)) {
+        output.textContent = "❌ ID inválido";
+        return;
+    }
+
+    output.textContent = `<@${id}>`;
+}
+
+function copiarMention() {
+    const text = document.getElementById("resultadoMention").textContent;
+    if (text !== "A menção aparecerá aqui" && text !== "❌ ID inválido") {
+        navigator.clipboard.writeText(text);
+    }
+}
+
+/* ===== GERADOR PROVAS PUNIÇÃO ===== */
+function gerarProvasPunicao() {
+    const tipo = document.getElementById("tipoPunicao").value;
+    const motivo = document.getElementById("motivoPunicao").value;
+    const provas = document.getElementById("provasPunicao").value;
+
+    let texto = "";
+
+    if (tipo === "ADV") {
+        const denunciante = document.getElementById("denunciante").value;
+        const denunciado = document.getElementById("denunciado").value;
+        
+        texto = `**ADV**\n`;
+        texto += `**Denunciante**: ${denunciante}\n`;
+        texto += `**Denunciado**: ${denunciado}\n`;
+        texto += `**Motivo**: ${motivo}\n`;
+        texto += `**Provas**: ${provas}`;
+    } else {
+        const id = document.getElementById("idBan").value;
+        
+        texto = `**BAN**\n`;
+        texto += `**ID**: ${id}\n`;
+        texto += `**Motivo**: ${motivo}\n`;
+        texto += `**Provas**: ${provas}`;
+    }
+
+    document.getElementById("resultadoProvasPunicao").value = texto;
+}
+
+function copiarProvasPunicao() {
+    const text = document.getElementById("resultadoProvasPunicao").value;
+    if (text) {
+        navigator.clipboard.writeText(text);
+    }
+}
+
+// Atualizar campos ao mudar tipo de punição
+document.addEventListener('DOMContentLoaded', function() {
+    const selectPunicao = document.getElementById("tipoPunicao");
+    if (selectPunicao) {
+        selectPunicao.addEventListener("change", function() {
+            const tipo = this.value;
+            const camposDenunciante = document.getElementById("camposDenuncianteADV");
+            const camposID = document.getElementById("camposIDBAN");
+            
+            if (tipo === "ADV") {
+                camposDenunciante.style.display = "block";
+                camposID.style.display = "none";
+            } else {
+                camposDenunciante.style.display = "none";
+                camposID.style.display = "block";
+            }
+        });
+    }
+});
+
+/* ===== GERADOR TRIAL ===== */
+function gerarTrial() {
+    const tipo = document.getElementById("tipo").value;
+    const id = document.getElementById("idJogador").value;
+    const motivo = document.getElementById("motivo").value;
+    const itens = document.getElementById("itens").value;
+    const provas = document.getElementById("provas").value;
+
+    let texto = `**Solicito ${tipo === "DEVOLUCAO" ? "DEVOLUÇÃO DE ITENS" : tipo}**\n`;
+    texto += `**ID:** ${id}\n`;
+    if (tipo === "DEVOLUCAO") {
+        texto += `**Itens:** ${itens}\n`;
+    }
+    texto += `**Motivo:** ${motivo}\n`;
+    texto += `**Provas:** ${provas}`;
+
+    const cargosSelecionados = [];
+    
+    if (document.getElementById("cargoStaffTrial").checked) {
+        cargosSelecionados.push("<@&834230769811324988>");
+    }
+    if (document.getElementById("cargoSupervisorTrial").checked) {
+        cargosSelecionados.push("<@&898442078760108032>");
+    }
+    if (document.getElementById("cargoAdminTrial").checked) {
+        cargosSelecionados.push("<@&635565644175114316>");
+    }
+    if (document.getElementById("cargoAdminLogTrial").checked) {
+        cargosSelecionados.push("<@&1362168080716927133>");
+    }
+    if (document.getElementById("cargoSupervisorLogTrial").checked) {
+        cargosSelecionados.push("<@&1362168080716927132>");
+    }
+
+    if (cargosSelecionados.length > 0) {
+        texto += `\n\n${cargosSelecionados.join(" ")}`;
+    }
+
+    document.getElementById("resultadoTrial").value = texto;
+}
+
+function copiarTrial() {
+    const text = document.getElementById("resultadoTrial").value;
+    if (text) {
+        navigator.clipboard.writeText(text);
+    }
+}
+
+/* ===== GERADOR SOLICITAÇÕES ===== */
+function atualizarCamposSolicitacao() {
+    const tipo = document.getElementById("tipoSolicitacao").value;
+    const campoObservacao = document.getElementById("campoObservacaoSol");
+    const campoItens = document.getElementById("campoItensSol");
+    const campoCargosSol = document.getElementById("campoCargosSol");
+    const placeholderProvas = document.getElementById("provasSolicitacao");
+    const placeholderMotivo = document.getElementById("motivoSolicitacao");
+
+    if (tipo === "DEVOLUCAO_SOL") {
+        campoObservacao.style.display = "none";
+        campoItens.style.display = "block";
+        campoCargosSol.style.display = "block";
+        placeholderMotivo.placeholder = "Explique o motivo da devolução";
+        placeholderProvas.placeholder = "PROVAS SEMPRE CLIPE QUE COMPROVE O MOTIVO DA DEVOLUÇÃO, PODE ANEXAR LOG TAMBÉM";
+    } 
+    else if (tipo === "UNBAN") {
+        campoObservacao.style.display = "block";
+        campoItens.style.display = "none";
+        campoCargosSol.style.display = "block";
+        placeholderMotivo.placeholder = "Ex: O mesmo alegou que foi banido por pl enquanto estava na g6";
+        placeholderProvas.placeholder = "[Print da CDs e clipe, se tiver] - Lembre-se de sempre colocar o print da log de banimento e a foto da cds";
+    } 
+    else {
+        campoObservacao.style.display = "none";
+        campoItens.style.display = "none";
+        campoCargosSol.style.display = "block";
+        
+        if (tipo === "TELA") {
+            placeholderMotivo.placeholder = "Escreva quantas kills o mesmo fez na ação, explique o pq ele é suspeito";
+            placeholderProvas.placeholder = "Anexe os vídeos e se possível log para ADMINISTRADOR avaliar";
+        } else if (tipo === "RESET") {
+            placeholderMotivo.placeholder = "Explique qual motivo do reset";
+            placeholderProvas.placeholder = "Anexo das provas";
+        } else if (tipo === "ADM") {
+            placeholderMotivo.placeholder = "Descreva o motivo";
+            placeholderProvas.placeholder = "Anexe os vídeos e se possível log";
+        }
+    }
+}
+
+function gerarSolicitacao() {
+    const tipo = document.getElementById("tipoSolicitacao").value;
+    const id = document.getElementById("idSolicitacao").value;
+    const motivo = document.getElementById("motivoSolicitacao").value;
+    const observacao = document.getElementById("observacaoSolicitacao").value;
+    const itens = document.getElementById("itensSolicitacao").value;
+    const provas = document.getElementById("provasSolicitacao").value;
+
+    let tipoTexto = tipo === "DEVOLUCAO_SOL" ? "DEVOLUÇÃO" : tipo;
+    let texto = `**SOLICITAÇÃO DE ${tipoTexto}**\n`;
+    texto += `**ID:** ${id}\n`;
+    texto += `**Motivo:** ${motivo}\n`;
+    
+    if (tipo === "UNBAN") {
+        texto += `**Observação:** ${observacao}\n`;
+    }
+    
+    if (tipo === "DEVOLUCAO_SOL") {
+        texto += `**Itens:** ${itens}\n`;
+    }
+    
+    texto += `**Provas:** ${provas}`;
+
+    const cargosSelecionados = [];
+    
+    if (document.getElementById("cargoStaff").checked) {
+        cargosSelecionados.push("<@&834230769811324988>");
+    }
+    if (document.getElementById("cargoSupervisor").checked) {
+        cargosSelecionados.push("<@&898442078760108032>");
+    }
+    if (document.getElementById("cargoAdmin").checked) {
+        cargosSelecionados.push("<@&635565644175114316>");
+    }
+    if (document.getElementById("cargoAdminLog").checked) {
+        cargosSelecionados.push("<@&1362168080716927133>");
+    }
+    if (document.getElementById("cargoSupervisorLog").checked) {
+        cargosSelecionados.push("<@&1362168080716927132>");
+    }
+
+    if (cargosSelecionados.length > 0) {
+        texto += `\n\n${cargosSelecionados.join(" ")}`;
+    }
+
+    document.getElementById("resultadoSolicitacao").value = texto;
+}
+
+function copiarSolicitacao() {
+    const text = document.getElementById("resultadoSolicitacao").value;
+    if (text) {
+        navigator.clipboard.writeText(text);
+    }
+}
+
+/* ===== GERAL ===== */
+function copiar(texto) {
+    navigator.clipboard.writeText(texto);
+}
+
+window.onload = function() {
+    atualizarCamposSolicitacao();
+};
+</script>
+
+</body>
+</html>
