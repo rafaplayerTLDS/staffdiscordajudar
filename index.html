@@ -215,7 +215,7 @@
 
 <div class="container">
 
-    <!-- GERADOR @ -->
+    <!-- 1 - GERADOR @ -->
     <div class="box">
         <h3>👤 Gerador de @ Discord</h3>
 
@@ -229,44 +229,7 @@
         <button onclick="copiarMention()">📋 Copiar @</button>
     </div>
 
-    <!-- GERADOR PROVAS PUNIÇÃO -->
-    <div class="box">
-        <h3>⚖️ Gerador de Provas Punição (LOGS)</h3>
-
-        <label>Tipo de Punição</label>
-        <select id="tipoPunicao">
-            <option value="ADV">ADV</option>
-            <option value="BAN">BAN</option>
-        </select>
-
-        <div id="camposDenuncianteADV">
-            <label>Denunciante</label>
-            <input id="denunciante" placeholder="Nome do denunciante">
-
-            <label>Denunciado</label>
-            <input id="denunciado" placeholder="Nome do denunciado">
-        </div>
-
-        <div id="camposIDBAN" style="display: none;">
-            <label>ID</label>
-            <input id="idBan" placeholder="Ex: 123">
-        </div>
-
-        <label>Motivo</label>
-        <textarea id="motivoPunicao" placeholder="Descreva o motivo"></textarea>
-
-        <label>Provas</label>
-        <textarea id="provasPunicao" placeholder="Cole os links das provas"></textarea>
-
-        <button onclick="gerarProvasPunicao()">Gerar Provas</button>
-
-        <label>Resultado</label>
-        <textarea id="resultadoProvasPunicao" readonly></textarea>
-
-        <button onclick="copiarProvasPunicao()">📋 Copiar Provas</button>
-    </div>
-
-    <!-- GERADOR TRIAL -->
+    <!-- 3 - GERADOR TRIAL -->
     <div class="box">
         <h3>🔧 PEDIDOS ADV / UNBAN / BAN / DEVOLUÇÃO (PRINCIPAL)</h3>
 
@@ -284,8 +247,10 @@
         <label>Motivo</label>
         <textarea id="motivo" placeholder="Descreva o motivo"></textarea>
 
-        <label>Itens (apenas para devolução)</label>
-        <textarea id="itens" placeholder="Ex: Pistola x1, Dinheiro x50k"></textarea>
+        <div id="campoItensTrial" style="display: none;">
+            <label>Itens (apenas para devolução)</label>
+            <textarea id="itens" placeholder="Ex: Pistola x1, Dinheiro x50k"></textarea>
+        </div>
 
         <label>Link da log/ msg / Provas</label>
         <input id="provas" placeholder="https://...">
@@ -322,7 +287,44 @@
         <button onclick="copiarTrial()">📋 Copiar Mensagem</button>
     </div>
 
-    <!-- GERADOR SOLICITAÇÕES -->
+    <!-- 2 - GERADOR PROVAS PUNIÇÃO -->
+    <div class="box">
+        <h3>⚖️ Gerador de Provas Punição (LOGS)</h3>
+
+        <label>Tipo de Punição</label>
+        <select id="tipoPunicao">
+            <option value="ADV">ADV</option>
+            <option value="BAN">BAN</option>
+        </select>
+
+        <div id="camposDenuncianteADV">
+            <label>Denunciante</label>
+            <input id="denunciante" placeholder="Nome do denunciante">
+
+            <label>Denunciado</label>
+            <input id="denunciado" placeholder="Nome do denunciado">
+        </div>
+
+        <div id="camposIDBAN" style="display: none;">
+            <label>ID</label>
+            <input id="idBan" placeholder="Ex: 123">
+        </div>
+
+        <label>Motivo</label>
+        <textarea id="motivoPunicao" placeholder="Descreva o motivo"></textarea>
+
+        <label>Provas</label>
+        <textarea id="provasPunicao" placeholder="Cole os links das provas"></textarea>
+
+        <button onclick="gerarProvasPunicao()">Gerar Provas</button>
+
+        <label>Resultado</label>
+        <textarea id="resultadoProvasPunicao" readonly></textarea>
+
+        <button onclick="copiarProvasPunicao()">📋 Copiar Provas</button>
+    </div>
+
+    <!-- 4 - GERADOR SOLICITAÇÕES -->
     <div class="box">
         <h3>📋 Gerador de Solicitações (LOGS)</h3>
 
@@ -342,7 +344,7 @@
         <textarea id="motivoSolicitacao" placeholder="Descreva o motivo"></textarea>
 
         <div id="campoObservacaoSol" style="display: block;">
-            <label>Observação</label>
+            <label>CDS (Observação)</label>
             <textarea id="observacaoSolicitacao" placeholder="Ex: Não tem o clipe do ocorrido porém a cds bate com o local informado pelo o mesmo. Log normal."></textarea>
         </div>
 
@@ -351,7 +353,7 @@
             <textarea id="itensSolicitacao" placeholder="Coloque todos os itens que foram perdidos"></textarea>
         </div>
 
-        <label id="labelProvas">Provas</label>
+        <label id="labelProvas">Clipe</label>
         <textarea id="provasSolicitacao" placeholder="Anexe os vídeos e se possível log"></textarea>
 
         <div id="campoCargosSol" style="display: block;">
@@ -447,7 +449,7 @@ function copiarProvasPunicao() {
     }
 }
 
-// Atualizar campos ao mudar tipo de punição
+// Atualizar campos ao mudar tipo de punição e tipo de pedido
 document.addEventListener('DOMContentLoaded', function() {
     const selectPunicao = document.getElementById("tipoPunicao");
     if (selectPunicao) {
@@ -462,6 +464,21 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 camposDenunciante.style.display = "none";
                 camposID.style.display = "block";
+            }
+        });
+    }
+
+    // Atualizar campos ao mudar tipo de pedido (TRIAL)
+    const selectTrial = document.getElementById("tipo");
+    if (selectTrial) {
+        selectTrial.addEventListener("change", function() {
+            const tipo = this.value;
+            const campoItensTrial = document.getElementById("campoItensTrial");
+            
+            if (tipo === "DEVOLUCAO") {
+                campoItensTrial.style.display = "block";
+            } else {
+                campoItensTrial.style.display = "none";
             }
         });
     }
@@ -535,8 +552,9 @@ function atualizarCamposSolicitacao() {
         campoObservacao.style.display = "block";
         campoItens.style.display = "none";
         campoCargosSol.style.display = "block";
-        placeholderMotivo.placeholder = "Ex: O mesmo alegou que foi banido por pl enquanto estava na g6";
-        placeholderProvas.placeholder = "[Print da CDs e clipe, se tiver] - Lembre-se de sempre colocar o print da log de banimento e a foto da cds";
+        placeholderMotivo.placeholder = "Resumo objetivo do que o jogador alegou + contexto";
+        placeholderProvas.placeholder = "Link do clipe (ou deixe vazio se não houver)";
+        document.getElementById("observacaoSolicitacao").placeholder = "Informe se a CDS confere ou não confere - local informado pelo jogador x local do ban";
     } 
     else {
         campoObservacao.style.display = "none";
@@ -564,20 +582,28 @@ function gerarSolicitacao() {
     const itens = document.getElementById("itensSolicitacao").value;
     const provas = document.getElementById("provasSolicitacao").value;
 
-    let tipoTexto = tipo === "DEVOLUCAO_SOL" ? "DEVOLUÇÃO" : tipo;
-    let texto = `**SOLICITAÇÃO DE ${tipoTexto}**\n`;
-    texto += `**ID:** ${id}\n`;
-    texto += `**Motivo:** ${motivo}\n`;
-    
+    let texto = "";
+
     if (tipo === "UNBAN") {
-        texto += `**Observação:** ${observacao}\n`;
+        // Modelo padrão para UNBAN
+        texto = `**SOLICITAÇÃO DE UNBAN**\n`;
+        texto += `**ID:** ${id}\n`;
+        texto += `**Motivo do ban:** ${motivo}\n`;
+        texto += `**Clipe:** ${provas || "não tem clipe"}\n`;
+        texto += `**CDS:** ${observacao}`;
+    } else {
+        // Modelo para outros tipos
+        let tipoTexto = tipo === "DEVOLUCAO_SOL" ? "DEVOLUÇÃO" : tipo;
+        texto = `**SOLICITAÇÃO DE ${tipoTexto}**\n`;
+        texto += `**ID:** ${id}\n`;
+        texto += `**Motivo:** ${motivo}\n`;
+        
+        if (tipo === "DEVOLUCAO_SOL") {
+            texto += `**Itens:** ${itens}\n`;
+        }
+        
+        texto += `**Provas:** ${provas}`;
     }
-    
-    if (tipo === "DEVOLUCAO_SOL") {
-        texto += `**Itens:** ${itens}\n`;
-    }
-    
-    texto += `**Provas:** ${provas}`;
 
     const cargosSelecionados = [];
     
