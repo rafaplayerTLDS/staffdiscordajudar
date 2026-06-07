@@ -20,7 +20,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER NEXUS */
         .header-nexus {
             display: flex;
             align-items: stretch;
@@ -448,12 +447,25 @@
         <label>ID</label>
         <input id="idSolicitacao" placeholder="Ex: 123">
 
-        <label>Motivo</label>
-        <textarea id="motivoSolicitacao" placeholder="Descreva o motivo"></textarea>
+        <!-- Campos exclusivos do UNBAN -->
+        <div id="camposUnban" style="display: block;">
+            <label>Onde estava</label>
+            <textarea id="ondeEstava" placeholder="Local informado pelo jogador" style="min-height: 70px; background: #1a0a0a; color: #fff; border: 2px solid #3d2020;"></textarea>
 
-        <div id="campoObservacaoSol" style="display: block;">
-            <label>CDS (Observação)</label>
-            <textarea id="observacaoSolicitacao" placeholder="Ex: Não tem o clipe do ocorrido porém a cds bate com o local informado pelo o mesmo. Log normal."></textarea>
+            <label>O que estava fazendo</label>
+            <textarea id="oQueEstavaFazendo" placeholder="Resumo objetivo do que o jogador alegou" style="min-height: 70px; background: #1a0a0a; color: #fff; border: 2px solid #3d2020;"></textarea>
+
+            <label>Clipe</label>
+            <input id="clipeUnban" placeholder="não há / link do clipe" style="background: #1a0a0a; color: #fff; border: 2px solid #3d2020;">
+
+            <label>Link do ban</label>
+            <input id="linkBan" placeholder="Link do ban no Discord" style="background: #1a0a0a; color: #fff; border: 2px solid #3d2020;">
+        </div>
+
+        <!-- Campos para outros tipos -->
+        <div id="camposOutros" style="display: none;">
+            <label>Motivo</label>
+            <textarea id="motivoSolicitacao" placeholder="Descreva o motivo"></textarea>
         </div>
 
         <div id="campoItensSol" style="display: none;">
@@ -461,8 +473,10 @@
             <textarea id="itensSolicitacao" placeholder="Coloque todos os itens que foram perdidos"></textarea>
         </div>
 
-        <label id="labelProvas">Clipe</label>
-        <textarea id="provasSolicitacao" placeholder="Anexe os vídeos e se possível log"></textarea>
+        <div id="campoProvasOutros" style="display: none;">
+            <label id="labelProvas">Clipe / Provas</label>
+            <textarea id="provasSolicitacao" placeholder="Anexe os vídeos e se possível log"></textarea>
+        </div>
 
         <div id="campoCargosSol" style="display: block;">
             <label>Selecione os Cargos</label>
@@ -501,13 +515,11 @@
 </div>
 
 <script>
-// Proteção contra seleção e cópia do código
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
 });
 
 document.addEventListener('keydown', function(e) {
-    // Bloquear F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
     if (e.keyCode === 123 || 
         (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
         (e.ctrlKey && e.keyCode === 85)) {
@@ -532,11 +544,7 @@ function gerarMention() {
 function copiarMention() {
     const text = document.getElementById("resultadoMention").textContent;
     if (text !== "A menção aparecerá aqui" && text !== "❌ ID inválido") {
-        navigator.clipboard.writeText(text).then(() => {
-            // Copiado silenciosamente
-        }).catch(err => {
-            console.error('Erro ao copiar:', err);
-        });
+        navigator.clipboard.writeText(text).catch(err => console.error('Erro ao copiar:', err));
     }
 }
 
@@ -551,7 +559,6 @@ function gerarProvasPunicao() {
     if (tipo === "ADV") {
         const denunciante = document.getElementById("denunciante").value;
         const denunciado = document.getElementById("denunciado").value;
-        
         texto = `**ADV**\n`;
         texto += `**Denunciante**: ${denunciante}\n`;
         texto += `**Denunciado**: ${denunciado}\n`;
@@ -559,7 +566,6 @@ function gerarProvasPunicao() {
         texto += `**Provas**: ${provas}`;
     } else {
         const id = document.getElementById("idBan").value;
-        
         texto = `**BAN**\n`;
         texto += `**ID**: ${id}\n`;
         texto += `**Motivo**: ${motivo}\n`;
@@ -571,46 +577,23 @@ function gerarProvasPunicao() {
 
 function copiarProvasPunicao() {
     const text = document.getElementById("resultadoProvasPunicao").value;
-    if (text) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Copiado silenciosamente
-        }).catch(err => {
-            console.error('Erro ao copiar:', err);
-        });
-    }
+    if (text) navigator.clipboard.writeText(text).catch(err => console.error('Erro ao copiar:', err));
 }
 
-// Atualizar campos ao mudar tipo de punição e tipo de pedido
 document.addEventListener('DOMContentLoaded', function() {
     const selectPunicao = document.getElementById("tipoPunicao");
     if (selectPunicao) {
         selectPunicao.addEventListener("change", function() {
             const tipo = this.value;
-            const camposDenunciante = document.getElementById("camposDenuncianteADV");
-            const camposID = document.getElementById("camposIDBAN");
-            
-            if (tipo === "ADV") {
-                camposDenunciante.style.display = "block";
-                camposID.style.display = "none";
-            } else {
-                camposDenunciante.style.display = "none";
-                camposID.style.display = "block";
-            }
+            document.getElementById("camposDenuncianteADV").style.display = tipo === "ADV" ? "block" : "none";
+            document.getElementById("camposIDBAN").style.display = tipo === "BAN" ? "block" : "none";
         });
     }
 
-    // Atualizar campos ao mudar tipo de pedido (TRIAL)
     const selectTrial = document.getElementById("tipo");
     if (selectTrial) {
         selectTrial.addEventListener("change", function() {
-            const tipo = this.value;
-            const campoItensTrial = document.getElementById("campoItensTrial");
-            
-            if (tipo === "DEVOLUCAO") {
-                campoItensTrial.style.display = "block";
-            } else {
-                campoItensTrial.style.display = "none";
-            }
+            document.getElementById("campoItensTrial").style.display = this.value === "DEVOLUCAO" ? "block" : "none";
         });
     }
 });
@@ -625,164 +608,117 @@ function gerarTrial() {
 
     let texto = `**Solicito ${tipo === "DEVOLUCAO" ? "DEVOLUÇÃO DE ITENS" : tipo}**\n`;
     texto += `**ID:** ${id}\n`;
-    if (tipo === "DEVOLUCAO") {
-        texto += `**Itens:** ${itens}\n`;
-    }
+    if (tipo === "DEVOLUCAO") texto += `**Itens:** ${itens}\n`;
     texto += `**Motivo:** ${motivo}\n`;
     texto += `**Provas:** ${provas}`;
 
     const cargosSelecionados = [];
-    
-    if (document.getElementById("cargoStaffTrial").checked) {
-        cargosSelecionados.push("<@&834230769811324988>");
-    }
-    if (document.getElementById("cargoSupervisorTrial").checked) {
-        cargosSelecionados.push("<@&898442078760108032>");
-    }
-    if (document.getElementById("cargoAdminTrial").checked) {
-        cargosSelecionados.push("<@&635565644175114316>");
-    }
-    if (document.getElementById("cargoAdminLogTrial").checked) {
-        cargosSelecionados.push("<@&1362168080716927133>");
-    }
-    if (document.getElementById("cargoSupervisorLogTrial").checked) {
-        cargosSelecionados.push("<@&1362168080716927132>");
-    }
+    if (document.getElementById("cargoStaffTrial").checked) cargosSelecionados.push("<@&834230769811324988>");
+    if (document.getElementById("cargoSupervisorTrial").checked) cargosSelecionados.push("<@&898442078760108032>");
+    if (document.getElementById("cargoAdminTrial").checked) cargosSelecionados.push("<@&635565644175114316>");
+    if (document.getElementById("cargoAdminLogTrial").checked) cargosSelecionados.push("<@&1362168080716927133>");
+    if (document.getElementById("cargoSupervisorLogTrial").checked) cargosSelecionados.push("<@&1362168080716927132>");
 
-    if (cargosSelecionados.length > 0) {
-        texto += `\n${cargosSelecionados.join(" ")}`;
-    }
+    if (cargosSelecionados.length > 0) texto += `\n${cargosSelecionados.join(" ")}`;
 
     document.getElementById("resultadoTrial").value = texto;
 }
 
 function copiarTrial() {
     const text = document.getElementById("resultadoTrial").value;
-    if (text) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Copiado silenciosamente
-        }).catch(err => {
-            console.error('Erro ao copiar:', err);
-        });
-    }
+    if (text) navigator.clipboard.writeText(text).catch(err => console.error('Erro ao copiar:', err));
 }
 
 /* ===== GERADOR SOLICITAÇÕES ===== */
 function atualizarCamposSolicitacao() {
     const tipo = document.getElementById("tipoSolicitacao").value;
-    const campoObservacao = document.getElementById("campoObservacaoSol");
-    const campoItens = document.getElementById("campoItensSol");
-    const campoCargosSol = document.getElementById("campoCargosSol");
-    const placeholderProvas = document.getElementById("provasSolicitacao");
-    const placeholderMotivo = document.getElementById("motivoSolicitacao");
+    const camposUnban    = document.getElementById("camposUnban");
+    const camposOutros   = document.getElementById("camposOutros");
+    const campoItens     = document.getElementById("campoItensSol");
+    const campoProvas    = document.getElementById("campoProvasOutros");
+    const motivoEl       = document.getElementById("motivoSolicitacao");
+    const provasEl       = document.getElementById("provasSolicitacao");
 
-    if (tipo === "DEVOLUCAO_SOL") {
-        campoObservacao.style.display = "none";
-        campoItens.style.display = "block";
-        campoCargosSol.style.display = "block";
-        placeholderMotivo.placeholder = "Explique o motivo da devolução";
-        placeholderProvas.placeholder = "PROVAS SEMPRE CLIPE QUE COMPROVE O MOTIVO DA DEVOLUÇÃO, PODE ANEXAR LOG TAMBÉM";
-    } 
-    else if (tipo === "UNBAN") {
-        campoObservacao.style.display = "block";
-        campoItens.style.display = "none";
-        campoCargosSol.style.display = "block";
-        placeholderMotivo.placeholder = "Resumo objetivo do que o jogador alegou + contexto";
-        placeholderProvas.placeholder = "Link do clipe (ou deixe vazio se não houver)";
-        document.getElementById("observacaoSolicitacao").placeholder = "Informe se a CDS confere ou não confere - local informado pelo jogador x local do ban";
-    } 
-    else {
-        campoObservacao.style.display = "none";
-        campoItens.style.display = "none";
-        campoCargosSol.style.display = "block";
-        
-        if (tipo === "TELA") {
-            placeholderMotivo.placeholder = "Escreva quantas kills o mesmo fez na ação, explique o pq ele é suspeito";
-            placeholderProvas.placeholder = "Anexe os vídeos e se possível log para ADMINISTRADOR avaliar";
-        } else if (tipo === "RESET") {
-            placeholderMotivo.placeholder = "Explique qual motivo do reset";
-            placeholderProvas.placeholder = "Anexo das provas";
-        } else if (tipo === "ADM") {
-            placeholderMotivo.placeholder = "Descreva o motivo";
-            placeholderProvas.placeholder = "Anexe os vídeos e se possível log";
+    if (tipo === "UNBAN") {
+        camposUnban.style.display  = "block";
+        camposOutros.style.display = "none";
+        campoItens.style.display   = "none";
+        campoProvas.style.display  = "none";
+    } else {
+        camposUnban.style.display  = "none";
+        camposOutros.style.display = "block";
+        campoProvas.style.display  = "block";
+
+        if (tipo === "DEVOLUCAO_SOL") {
+            campoItens.style.display = "block";
+            motivoEl.placeholder = "Explique o motivo da devolução";
+            provasEl.placeholder = "PROVAS SEMPRE CLIPE QUE COMPROVE O MOTIVO DA DEVOLUÇÃO, PODE ANEXAR LOG TAMBÉM";
+        } else {
+            campoItens.style.display = "none";
+            if (tipo === "TELA") {
+                motivoEl.placeholder = "Escreva quantas kills o mesmo fez na ação, explique o pq ele é suspeito";
+                provasEl.placeholder = "Anexe os vídeos e se possível log para ADMINISTRADOR avaliar";
+            } else if (tipo === "RESET") {
+                motivoEl.placeholder = "Explique qual motivo do reset";
+                provasEl.placeholder = "Anexo das provas";
+            } else if (tipo === "ADM") {
+                motivoEl.placeholder = "Descreva o motivo";
+                provasEl.placeholder = "Anexe os vídeos e se possível log";
+            }
         }
     }
 }
 
 function gerarSolicitacao() {
     const tipo = document.getElementById("tipoSolicitacao").value;
-    const id = document.getElementById("idSolicitacao").value;
-    const motivo = document.getElementById("motivoSolicitacao").value;
-    const observacao = document.getElementById("observacaoSolicitacao").value;
-    const itens = document.getElementById("itensSolicitacao").value;
-    const provas = document.getElementById("provasSolicitacao").value;
+    const id   = document.getElementById("idSolicitacao").value;
 
     let texto = "";
 
     if (tipo === "UNBAN") {
-        // Modelo padrão para UNBAN
-        texto = `**SOLICITAÇÃO DE UNBAN**\n`;
+        const ondeEstava       = document.getElementById("ondeEstava").value;
+        const oQueEstavaFazendo = document.getElementById("oQueEstavaFazendo").value;
+        const clipe            = document.getElementById("clipeUnban").value || "não há";
+        const linkBan          = document.getElementById("linkBan").value;
+
+        texto  = `**SOLICITAÇÃO DE UNBAN**\n`;
         texto += `**ID:** ${id}\n`;
-        texto += `**Motivo do ban:** ${motivo}\n`;
-        texto += `**Clipe:** ${provas || "não tem clipe"}\n`;
-        texto += `**CDS:** ${observacao}`;
+        texto += `**Onde estava:** ${ondeEstava}\n`;
+        texto += `**O que estava fazendo:** ${oQueEstavaFazendo}\n`;
+        texto += `**Clipe:** ${clipe}\n`;
+        texto += `**Link do ban:** ${linkBan}`;
     } else {
-        // Modelo para outros tipos
+        const motivo = document.getElementById("motivoSolicitacao").value;
+        const provas = document.getElementById("provasSolicitacao").value;
+        const itens  = document.getElementById("itensSolicitacao").value;
+
         let tipoTexto = tipo === "DEVOLUCAO_SOL" ? "DEVOLUÇÃO" : tipo;
-        texto = `**SOLICITAÇÃO DE ${tipoTexto}**\n`;
+        texto  = `**SOLICITAÇÃO DE ${tipoTexto}**\n`;
         texto += `**ID:** ${id}\n`;
         texto += `**Motivo:** ${motivo}\n`;
-        
-        if (tipo === "DEVOLUCAO_SOL") {
-            texto += `**Itens:** ${itens}\n`;
-        }
-        
+        if (tipo === "DEVOLUCAO_SOL") texto += `**Itens:** ${itens}\n`;
         texto += `**Provas:** ${provas}`;
     }
 
     const cargosSelecionados = [];
-    
-    if (document.getElementById("cargoStaff").checked) {
-        cargosSelecionados.push("<@&834230769811324988>");
-    }
-    if (document.getElementById("cargoSupervisor").checked) {
-        cargosSelecionados.push("<@&898442078760108032>");
-    }
-    if (document.getElementById("cargoAdmin").checked) {
-        cargosSelecionados.push("<@&635565644175114316>");
-    }
-    if (document.getElementById("cargoAdminLog").checked) {
-        cargosSelecionados.push("<@&1362168080716927133>");
-    }
-    if (document.getElementById("cargoSupervisorLog").checked) {
-        cargosSelecionados.push("<@&1362168080716927132>");
-    }
+    if (document.getElementById("cargoStaff").checked)         cargosSelecionados.push("<@&834230769811324988>");
+    if (document.getElementById("cargoSupervisor").checked)    cargosSelecionados.push("<@&898442078760108032>");
+    if (document.getElementById("cargoAdmin").checked)         cargosSelecionados.push("<@&635565644175114316>");
+    if (document.getElementById("cargoAdminLog").checked)      cargosSelecionados.push("<@&1362168080716927133>");
+    if (document.getElementById("cargoSupervisorLog").checked) cargosSelecionados.push("<@&1362168080716927132>");
 
-    if (cargosSelecionados.length > 0) {
-        texto += `\n${cargosSelecionados.join(" ")}`;
-    }
+    if (cargosSelecionados.length > 0) texto += `\n${cargosSelecionados.join(" ")}`;
 
     document.getElementById("resultadoSolicitacao").value = texto;
 }
 
 function copiarSolicitacao() {
     const text = document.getElementById("resultadoSolicitacao").value;
-    if (text) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Copiado silenciosamente
-        }).catch(err => {
-            console.error('Erro ao copiar:', err);
-        });
-    }
+    if (text) navigator.clipboard.writeText(text).catch(err => console.error('Erro ao copiar:', err));
 }
 
-/* ===== GERAL ===== */
 function copiar(texto) {
-    navigator.clipboard.writeText(texto).then(() => {
-        // Copiado silenciosamente
-    }).catch(err => {
-        console.error('Erro ao copiar:', err);
-    });
+    navigator.clipboard.writeText(texto).catch(err => console.error('Erro ao copiar:', err));
 }
 
 window.onload = function() {
